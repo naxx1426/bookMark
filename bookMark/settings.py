@@ -82,8 +82,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bookMark',
-        'USER': 'root',
-        'PASSWORD': '142638',
+        'USER': 'xxxx',
+        'PASSWORD': 'xxxx',
         #   在实例代码中替换为你的用户名和密码
     }
 }
