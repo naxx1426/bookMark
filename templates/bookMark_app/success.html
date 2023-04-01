@@ -1,0 +1,9 @@
+ {% extends 'bookMark_app/base.html' %}
+
+{% block content %}
+    <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}');
+        {% endfor %}
+    </script>
+{% endblock %}

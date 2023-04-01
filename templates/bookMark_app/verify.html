@@ -1,0 +1,11 @@
+{% extends 'bookMark_app/base.html' %}
+
+{% block content %}
+  <h2>验证</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label>验证码:</label>
+    <input type="text" name="验证码" required>
+    <button type="submit">验证</button>
+  </form>
+{% endblock %}
