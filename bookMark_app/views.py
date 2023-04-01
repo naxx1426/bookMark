@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from smtplib import SMTPRecipientsRefused
 from django.contrib import messages
 import random
 import string
 from twilio.rest import Client
+from django.core import mail
 from .models import UseInfo
 from .forms import UserInfoForm
 # Create your views here.
@@ -17,13 +19,24 @@ def register(request):
             user.account_id = generate_account_id()
             #创建并发送验证码
             chars = 'abcdefghijklmnopqrstuvwsyzABCDEFGHIJKLMNOPQRSTUVWSYZ0123456789'
-            verification_code = ''
+            phone_verification_code = ''
+            mailbox_verification_code = ''
             for x in range(6):
-                verification_code += random.choice(chars)
-            send_sms(user.phone_number, verification_code)
+                phone_verification_code += random.choice(chars)
+                mailbox_verification_code += random.choice(chars)
+            send_sms(user.phone_number, phone_verification_code)
+            mail.send_mail(
+                subject='你的验证码',  # 题目
+                message='欢迎使用盲盒，为保证您的正常使用，请输入下面的验证码\n' + mailbox_verification_code +
+                        '\n注意：验证码的有效期为30分钟',
+                 # 消息内容
+                from_email='2228795091@qq.com',  # 发送者[当前配置邮箱]
+                 recipient_list=[user.mailbox],  # 接收者邮件列表
+            )
             # 将带有验证码的用户实例作为session变量存储
             request.session['user'] = user
-            request.session['verification_code'] = verification_code
+            request.session['phone_verification_code'] = phone_verification_code
+            request.session['mailbox_verification_code'] = mailbox_verification_code
             return render(request, 'bookMark_app/verify.html')
     else:
         form = UserInfoForm()
@@ -45,12 +58,14 @@ def send_sms(phone_number, code):
 
 def verify(request):
     if request.method == 'POST':
-        input_code = request.POST.get('verification_code')
-        if input_code == request.session.get('verification_code'):
+        input_phone_code = request.POST.get('phone_verification_code')
+        input_mailbox_code = request.POST.get('mailbox_verification_code')
+        if input_phone_code == request.session.get('phone_verification_code')\
+                and input_mailbox_code == request.session.get('mailbox_verification_code'):
             user = request.session.get('user')
             user.save()
             messages.error(request, '你的账号创建成功')
-            return render(request, 'bookMark_app/success.html')
+            return render(request, 'bookMark_app/index.html')
         else:
             messages.error(request, '验证失败，请重新尝试')
             return render(request, 'bookMark_app/failed.html')

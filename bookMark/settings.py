@@ -193,3 +193,12 @@ CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，留空则调用django的
 CKEDITOR_IMAGE_BACKEND = "pillow"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'your-email-server.com'  # 你的邮件服务器地址
+EMAIL_PORT = 587  # 你的邮件服务器端口
+EMAIL_USE_TLS = True  # 是否使用TLS
+EMAIL_HOST_USER = 'your-email@example.com'  # 你的邮箱地址
+EMAIL_HOST_PASSWORD = 'your-email-password'  # 你的邮箱密码
+DEFAULT_FROM_EMAIL = 'your-email@example.com'  # 默认发件人邮箱

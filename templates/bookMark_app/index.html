@@ -5,6 +5,14 @@
     <title>主页</title>
 </head>
 <body>
-
+    <div>
+    {% block content %}
+        <script>
+        {% for msg in messages %}
+            alert('{{ msg.message }}');
+        {% endfor %}
+    </script>
+    {% endblock %}
+  </div>
 </body>
 </html>
