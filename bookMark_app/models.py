@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here.
 
 class UseInfo(models.Model):
@@ -9,6 +10,7 @@ class UseInfo(models.Model):
     password = models.CharField(max_length=32, verbose_name='密码')
     mailbox = models.EmailField(unique=True, verbose_name='邮箱')
     phone_number = PhoneNumberField(unique=True, verbose_name='手机号')
+    introduction = RichTextUploadingField(verbose_name='个人简介')
 
     class Meta:
         verbose_name_plural = '个人信息'

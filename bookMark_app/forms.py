@@ -9,4 +9,4 @@ class UserInfoForm(forms.ModelForm):
 
     class Meta:
         model = UseInfo
-        fields = "__all__"
+        fields = ['mailbox', 'phone_number']
