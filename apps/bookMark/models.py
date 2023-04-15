@@ -6,9 +6,11 @@ class Category(models.Model):
     """
     分类
     """
-    sort_name = models.CharField(verbose_name="分类名称", max_length=10)
-    user = models.ForeignKey('Information', on_delete=models.CASCADE())
+    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name='分类名称')
 
+    def __str__(self):
+        return self.name
 
 class Bookmark_recommend(models.Model):
     """ 推荐书签 """
@@ -18,7 +20,7 @@ class Bookmark_recommend(models.Model):
     icon = models.URLField(verbose_name="图标地址", default="//")
 
 
-class Bookmark(models.Model):
+class bookMark(models.Model):
     """ 书签 """
     mark_name = models.CharField(verbose_name="网站名称", max_length=20)
     url = models.URLField(verbose_name="网址")
