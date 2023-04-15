@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.conf import settings
 from django.core import mail
 from django.core.cache import cache
 from django.contrib import messages
@@ -16,75 +16,59 @@ import json
 
 # 登录
 def login(request):
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    elif request.method == 'POST':
-        email = request.POST.get['email']
-        password = request.POST.get['password']
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
         try:
-            user = models.UserInfo.objects.get(email=email, password=password)
-        except models.UserInfo.DoesNotExist:
-            messages.error(request, '用户不存在或密码错误')
-            return render(request, 'login.html')
-        new_token = create_jwt(user.id)
-        messages.success(request, '登录成功')
+            login_user = user.models.User.objects.get(email=email, password=password)
+        except user.models.User.DoesNotExist:
+            return JsonResponse({'messages': '用户不存在或密码错误', 'token': {}})
+        new_token = create_jwt(login_user.id)
         return JsonResponse({'messages': '登录成功', 'token': new_token})
 
 
 # 注册
 def register(request):
-    if request.method == 'GET':
-        return render(request, 'register.html')
-    elif request.method == 'POST':
+    if request.method == 'POST':
         email = request.POST.get['email']
         password = request.POST.get['password']
         code = request.POST.get['code']
         try:
-            user = models.UserInfo.objects.get(email=email)
-        except models.UserInfo.DoesNotExist:
-            user = None
+            register_user = user.models.User.objects.get(email=email)
+        except user.models.User.DoesNotExist:
+            register_user = None
         if user is not None:
             if code == '':
-                messages.error(request, '请输入验证码')
-                return render(request, 'register.html')
+                return JsonResponse({'messages': '请输入验证码'})
             elif code == cache.get(email):
                 cache.delete(email)
-                models.UserInfo.objects.create(username=email, email=email, password=password)
-                messages.success(request, '注册成功')
-                return render(request, 'login.html')
+                user.models.User.objects.create(username=email, email=email, password=password)
+                return JsonResponse({'messages': '注册成功'})
             elif code != cache.get(email):
-                messages.error(request, '验证码错误')
-                return render(request, 'register.html')
+                return JsonResponse({'messages': '验证码错误'})
         else:
-            messages.error(request, '用户已存在')
-            return render(request, 'register.html')
+            return JsonResponse({'messages': '用户已存在'})
 
 
 # 找回密码
 def retrieve(request):
-    if request.method == 'GET':
-        return render(request, 'retrieve.html')
-    elif request.method == 'POST':
+    if request.method == 'POST':
         email = request.POST.get['email']
         password = request.POST.get['password']
         code = request.POST.get['code']
         try:
-            user = models.UserInfo.objects.get(email=email)
-        except models.UserInfo.DoesNotExist:
-            messages.error(request, '用户不存在')
-            return render(request, 'retrieve.html')
+            retrieve_user = user.models.User.objects.get(email=email)
+        except user.models.User.DoesNotExist:
+            return JsonResponse({'messages': '用户不存在'})
         if code == '':
-            messages.error(request, '请输入验证码')
-            return render(request, 'retrieve.html')
+            return JsonResponse({'messages': '请输入验证码'})
         elif code == cache.get(email):
             cache.delete(email)
-            user.password = password
-            user.save()
-            messages.success(request, '验证成功')
-            return render(request, 'login.html')
+            retrieve_user.password = password
+            retrieve_user.save()
+            return JsonResponse({'messages': '验证成功'})
         elif code != cache.get(email):
-            messages.error(request, '验证码错误')
-            return render(request, 'retrieve.html')
+            return JsonResponse({'messages': '验证码错误'})
 
 
 # 发送邮箱验证码
@@ -100,8 +84,7 @@ def send_email(request):
         fail_silently=False,
     )
     cache.set(code, code, 600)  # （键，赋给键的值，缓存时间）
-    messages.success(request, '发送成功')
-    return render(request, 'send_email.html')  # 需要加入自动跳转至上一页面的功能
+    return JsonResponse({'messages': '发送成功'})
 
 
 # 检查token有效性
