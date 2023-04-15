@@ -3,11 +3,12 @@ from django.core import mail
 from django.core.cache import cache
 from django.contrib import messages
 from django.conf import settings
-import random
-from . import models
+import random, time
+from bookMark_app import models
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .utils import create_jwt, verify_jwt, refresh_jwt
+from bookMark_app.utils import create_jwt, verify_jwt, refresh_jwt
+import json
 
 
 # Create your views here.
@@ -26,7 +27,7 @@ def login(request):
             return render(request, 'login.html')
         new_token = create_jwt(user.id)
         messages.success(request, '登录成功')
-        return render(request, 'index.html')
+        return JsonResponse({'messages': '登录成功', 'token': new_token})
 
 
 # 注册
