@@ -1,12 +1,12 @@
 from django.db import models
-
+from apps import user
 
 # Create your models here.
 class Category(models.Model):
     """
     分类
     """
-    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    user = models.ForeignKey(user.UserInfo, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name='分类名称')
 
     def __str__(self):
