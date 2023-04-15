@@ -15,8 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from apps.user import views
+
+from it_drf_utils.router_builder import RouterBuilder
+from it_drf_utils.auth import ITTokenRefreshView, ITTokenObtainPairView
+
+from apps.bookMark.views import BookMarkView
+
+router = RouterBuilder(trailing_slash=False)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +33,7 @@ urlpatterns = [
     path('send_email/', views.send_email, name='send_email'),
     path('check_token_validity/', views.check_token_validity, name='check_token_validity'),
     path('refreshtoken/', views.refresh_token, name='refresh_token'),
+    path("", include(router.urls)),
+    path("", include(router.url_patterns)),
+path('bookmark/', BookMarkView.default, name='bookmark'),
 ]
