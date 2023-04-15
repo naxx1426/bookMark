@@ -20,7 +20,7 @@ class Bookmark_recommend(models.Model):
     icon = models.URLField(verbose_name="图标地址", default="//")
 
 
-class bookMark(models.Model):
+class Bookmark(models.Model):
     """ 书签 """
     mark_name = models.CharField(verbose_name="网站名称", max_length=20)
     url = models.URLField(verbose_name="网址")
