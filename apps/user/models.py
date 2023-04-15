@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from apps import bookMark
+
 
 class UserInfo(models.Model):
     username = models.CharField(max_length=32, verbose_name='用户名', unique=True)
@@ -14,16 +14,3 @@ class UserInfo(models.Model):
 
     def __str__(self):
         return self.username
-
-
-
-class Bookmark(models.Model):
-    title = models.CharField(max_length=200)
-    url = models.URLField()
-    icon = models.ImageField(upload_to='bookmarks/icons/')
-    description = models.TextField(blank=True)
-    category = models.ForeignKey(bookMark.Category, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.title
