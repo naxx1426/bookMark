@@ -16,12 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from apps.user import views
+from user import views
 
 from it_drf_utils.router_builder import RouterBuilder
 from it_drf_utils.auth import ITTokenRefreshView, ITTokenObtainPairView
 
-from apps.bookMark.views import BookMarkView
+from bookmark.views import BookMarkView
 
 router = RouterBuilder(trailing_slash=False)
 
@@ -35,5 +35,5 @@ urlpatterns = [
     path('refreshtoken/', views.refresh_token, name='refresh_token'),
     path("", include(router.urls)),
     path("", include(router.url_patterns)),
-path('bookmark/', BookMarkView.default, name='bookmark'),
+    path('bookmark/', BookMarkView.default, name='bookmark'),
 ]

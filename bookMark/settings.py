@@ -11,16 +11,25 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import sys,os
+from json import loads
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
+CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
+
+with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+    config = loads(f.read())
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hl2)gm)i95%+5i!!=b4h^^=5^7z(kungs+p!#l36_7b0f*$oui'
+SECRET_KEY = config.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,8 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.user',
-    'bookMark',
+    'user',
+    'bookmark',
 "corsheaders",
 ]
 
@@ -79,11 +88,17 @@ WSGI_APPLICATION = 'bookMark.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
+        'NAME': config.get('SQL_DB_NAME', ''),  # 你要存储数据的库名，事先要创建之
+        'USER': config.get('SQL_DB_USER', ''),  # 数据库用户名
+        'PASSWORD': config.get('SQL_DB_PASSWORD', ''),  # 密码
+        'HOST': config.get('SQL_DB_HOST', ''),  # 主机
+        'PORT': config.get('SQL_DB_PORT', ''),  # 数据库使用的端口
+    },
+    "test": {
+        'ENGINE': None,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
