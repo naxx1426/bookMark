@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class BookmarkAppConfig(AppConfig):
+class BookmarkConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'bookMark_app'
+    name = 'bookMark'

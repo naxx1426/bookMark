@@ -1,0 +1,8 @@
+config.json
+/venv
+migrations/
+__pycache__/
+/.idea
+*.pyc
+app_private_key.pem
+app_public_key.pem

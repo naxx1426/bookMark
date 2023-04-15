@@ -3,12 +3,11 @@ from django.core import mail
 from django.core.cache import cache
 from django.contrib import messages
 from django.conf import settings
-import random, time
-from bookMark_app import models
+import random
+from . import models
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import create_jwt, verify_jwt, refresh_jwt
-import json
 
 
 # Create your views here.
