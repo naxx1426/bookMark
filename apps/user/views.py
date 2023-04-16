@@ -1,16 +1,12 @@
+import random, time, json
 from django.conf import settings
 from django.core import mail
 from django.core.cache import cache
-from django.contrib import messages
-from django.conf import settings
-import random, time
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from user.utils import create_jwt, verify_jwt, refresh_jwt
-from user import models
-import json
-
+from apps.user import models
+from .utils import create_jwt, verify_jwt, refresh_jwt
+from .. import user
 
 # Create your views here.
 
@@ -37,7 +33,7 @@ def register(request):
             register_user = user.models.User.objects.get(email=email)
         except user.models.User.DoesNotExist:
             register_user = None
-        if user is not None:
+        if register_user is not None:
             if code == '':
                 return JsonResponse({'messages': '请输入验证码'})
             elif code == cache.get(email):
@@ -62,12 +58,12 @@ def retrieve(request):
             return JsonResponse({'messages': '用户不存在'})
         if code == '':
             return JsonResponse({'messages': '请输入验证码'})
-        elif code == cache.get(email):
-            cache.delete(email)
+        elif code == cache.get(code):
+            cache.delete(code)
             retrieve_user.password = password
             retrieve_user.save()
             return JsonResponse({'messages': '验证成功'})
-        elif code != cache.get(email):
+        elif code != cache.get(code):
             return JsonResponse({'messages': '验证码错误'})
 
 
