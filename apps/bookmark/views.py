@@ -35,21 +35,30 @@ class BookMarkView(ViewSetPlus):
     def new(self, request, pk, *args, **kwargs):
         bookmark_data = Bookmark.objects.filter(user__username=pk)
         if not bookmark_data.exists():
-            raise ValidationException(MyResponseStatus.USER_NOT_EXIST)
+            raise ValidationException(ResponseStatus.USER_NOT_EXIST)
         data = request.data
-
         data["user"] = 1
-
-        if not isinstance(data.get("category"),str):
-            data["category"] = -1
-
-
+        if not isinstance(data.get("category"),int):
+            data["category"] = None
         serializer = NewBookMarkSerializer(data=data)
         if not serializer.is_valid():
-            raise ValidationException(MyResponseStatus.USER_NOT_EXIST)
+            raise ValidationException(ResponseStatus.USER_NOT_EXIST)
         serializer.save()
 
         return Response(ResponseStatus.OK)
+
+    @post_mapping(value="edit", detail=True)
+    def edit(self, request, pk, *args, **kwargs):
+        bookmark_data = Bookmark.objects.filter(user__username=pk)
+        if not bookmark_data.exists():
+            raise ValidationException(ResponseStatus.USER_NOT_EXIST)
+        data = request.data
+        data["user"] = 1
+
+
+
+        return Response(ResponseStatus.OK)
+
 
     def default(request, *args, **kwargs):
         bookmark_data = Bookmark.objects.filter(isRecommond=1)
@@ -71,13 +80,13 @@ class MarkView(APIViewPlus):
         link = data.get("url")
         bookmark_id = data.get("id")
         if not isinstance(link,str) or isinstance(bookmark_id,int):
-            raise ValidationException(MyResponseStatus.BOOKMARK_NOT_EXIST)
+            raise ValidationException(ResponseStatus.BOOKMARK_NOT_EXIST)
         if not isinstance(re.match(relax,link),re.Match):
             link = "http://" + link
 
         bm = Bookmark.objects.filter(id=bookmark_id)
         if not bm.exists():
-            raise ValidationException(MyResponseStatus.BOOKMARK_NOT_EXIST)
+            raise ValidationException(ResponseStatus.BOOKMARK_NOT_EXIST)
 
         _bm = bm.first()
         _bm.access_number += 1

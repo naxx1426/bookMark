@@ -19,7 +19,7 @@ class BookMarkSerializer(ITModelSerializer):
 class NewBookMarkSerializer(ITModelSerializer):
     class Meta:
         model = Bookmark
-        exclude  = ["id","isRecommond", "access_time", "access_number", "user", "updated","created"]
+        exclude  = ["id","isRecommond",  "access_number", "updated","created"]
         extra_kwargs = {
             "mark_name": {
                 "error_messages": {
@@ -38,22 +38,22 @@ class NewBookMarkSerializer(ITModelSerializer):
             "introduction": {
                 "error_messages": {
                     "invalid": "INTRODUCTION_ERROR",
-                    "blank": "INTRODUCTION_REQUIRED_ERROR",
-                    "required": "INTRODUCTION_REQUIRED_ERROR"
+                    "blank": "INTRODUCTION_ERROR",
+                    "required": "INTRODUCTION_ERROR"
                 }
             },
             "icon": {
                 "error_messages": {
                     "invalid": "ICON_ERROR",
-                    "blank": "ICON_REQUIRED_ERROR",
-                    "required": "ICON_REQUIRED_ERROR"
+                    "blank": "ICON_ERROR",
+                    "required": "ICON_ERROR"
                 }
             },
-            "introduction": {
+            "category": {
                 "error_messages": {
-                    "invalid": "INTRODUCTION_ERROR",
-                    "blank": "INTRODUCTION_REQUIRED_ERROR",
-                    "required": "INTRODUCTION_REQUIRED_ERROR"
+                    "invalid": "CATEGORY_ERROR",
+                    "blank": "CATEGORY_ERROR",
+                    "required": "CATEGORY_ERROR"
                 }
             },
         }
