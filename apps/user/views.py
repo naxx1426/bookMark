@@ -4,9 +4,8 @@ from django.core import mail
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from apps.user import models
 from .utils import create_jwt, verify_jwt, refresh_jwt
-from .. import user
+from user.models import User
 
 # Create your views here.
 
@@ -16,8 +15,8 @@ def login(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         try:
-            login_user = user.models.User.objects.get(email=email, password=password)
-        except user.models.User.DoesNotExist:
+            login_user = User.objects.get(email=email, password=password)
+        except User.DoesNotExist:
             return JsonResponse({'messages': '用户不存在或密码错误', 'token': {}})
         new_token = create_jwt(login_user.id)
         return JsonResponse({'messages': '登录成功', 'token': new_token})
@@ -30,15 +29,15 @@ def register(request):
         password = request.POST.get['password']
         code = request.POST.get['code']
         try:
-            register_user = user.models.User.objects.get(email=email)
-        except user.models.User.DoesNotExist:
+            register_user = User.objects.get(email=email)
+        except User.DoesNotExist:
             register_user = None
         if register_user is not None:
             if code == '':
                 return JsonResponse({'messages': '请输入验证码'})
             elif code == cache.get(email):
                 cache.delete(email)
-                user.models.User.objects.create(username=email, email=email, password=password)
+                User.objects.create(username=email, email=email, password=password)
                 return JsonResponse({'messages': '注册成功'})
             elif code != cache.get(email):
                 return JsonResponse({'messages': '验证码错误'})
@@ -53,8 +52,8 @@ def retrieve(request):
         password = request.POST.get['password']
         code = request.POST.get['code']
         try:
-            retrieve_user = user.models.User.objects.get(email=email)
-        except user.models.User.DoesNotExist:
+            retrieve_user =User.objects.get(email=email)
+        except User.DoesNotExist:
             return JsonResponse({'messages': '用户不存在'})
         if code == '':
             return JsonResponse({'messages': '请输入验证码'})
